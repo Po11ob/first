@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>
+    <%= typeof title !== 'undefined' ? title + ' – ASS' : 'Assignment Submission System' %>
+  </title>
+
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+
+  <% if (typeof user !== 'undefined' && user) { %>
+
+    <div class="topbar">
+
+      <div class="brand">
+        📚 Assignment Submission System
+      </div>
+
+      <div class="user-info">
+
+        <span class="role-badge">
+          <%= user.role %>
+        </span>
+
+        <span>
+          <%= user.name %>
+        </span>
+
+        <form action="/logout" method="POST" style="display:inline">
+
+          <input
+            type="hidden"
+            name="_csrf"
+            value="<%= csrfToken %>"
+          >
+
+          <button type="submit" class="btn btn-secondary btn-sm">
+            Log out
+          </button>
+
+        </form>
+
+      </div>
+
+    </div>
+
+  <% } %>
+
+  <div class="container">

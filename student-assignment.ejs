@@ -1,0 +1,181 @@
+<%- include('partials/header', { user, title: assignment.title }) %>
+
+<p>
+  <a href="/student/dashboard">
+    &larr; Back to dashboard
+  </a>
+</p>
+
+
+<div class="card">
+
+  <div class="flex-between">
+
+    <h2 class="mt-0">
+      <%= assignment.title %>
+    </h2>
+
+
+    <% if (assignment.status === 'closed') { %>
+
+      <span class="badge badge-closed">
+        Closed
+      </span>
+
+    <% } else if (isPastDeadline) { %>
+
+      <span class="badge badge-closed">
+        Deadline passed
+      </span>
+
+    <% } else { %>
+
+      <span class="badge badge-open">
+        Open
+      </span>
+
+    <% } %>
+
+  </div>
+
+
+  <p class="muted">
+    <%= assignment.course_name %> · Faculty: <%= assignment.faculty_name %>
+  </p>
+
+  <p>
+    <%= assignment.description %>
+  </p>
+
+  <p>
+    <strong>Deadline:</strong>
+    <%= new Date(assignment.deadline).toLocaleString() %>
+  </p>
+
+  <p>
+    <strong>Allowed file types:</strong>
+    <%= assignment.allowed_file_types %>
+    &nbsp;
+    <strong>Max size:</strong>
+    <%= (assignment.max_file_size / (1024*1024)).toFixed(1) %> MB
+  </p>
+
+</div>
+
+
+<% if (success) { %>
+
+  <div class="alert alert-success">
+    Your assignment was submitted successfully.
+  </div>
+
+<% } %>
+
+
+<% if (error) { %>
+
+  <div class="alert alert-error">
+    <%= error %>
+  </div>
+
+<% } %>
+
+
+<% if (submission) { %>
+
+  <div class="card">
+
+    <h3 class="mt-0">
+      Your submission
+    </h3>
+
+    <p>
+      <strong>File:</strong>
+      <%= submission.file_original_name %>
+    </p>
+
+    <p>
+      <strong>Submitted at:</strong>
+      <%= new Date(submission.submitted_at).toLocaleString() %>
+    </p>
+
+
+    <% if (submission.updated_at !== submission.submitted_at) { %>
+
+      <p class="muted">
+        Last updated:
+        <%= new Date(submission.updated_at).toLocaleString() %>
+      </p>
+
+    <% } %>
+
+
+    <a
+      class="btn btn-secondary btn-sm"
+      href="/student/submissions/<%= submission.id %>/download"
+    >
+      Download my file
+    </a>
+
+  </div>
+
+<% } %>
+
+
+<% if (canSubmit) { %>
+
+  <div class="card">
+
+    <h3 class="mt-0">
+      <%= submission ? 'Replace your submission' : 'Submit your assignment' %>
+    </h3>
+
+
+    <form
+      method="POST"
+      action="/student/assignments/<%= assignment.id %>/submit"
+      enctype="multipart/form-data"
+    >
+
+      <input
+        type="hidden"
+        name="_csrf"
+        value="<%= csrfToken %>"
+      >
+
+
+      <div class="form-group">
+
+        <label for="file">
+          Choose file
+        </label>
+
+        <input
+          type="file"
+          id="file"
+          name="file"
+          required
+        >
+
+      </div>
+
+
+      <button type="submit" class="btn">
+        <%= submission ? 'Resubmit' : 'Submit' %>
+      </button>
+
+    </form>
+
+  </div>
+
+
+<% } else if (!submission) { %>
+
+  <div class="card empty-state">
+    Submissions are closed for this assignment.
+  </div>
+
+<% } %>
+
+
+<%- include('partials/footer') %>

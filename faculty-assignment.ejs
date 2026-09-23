@@ -1,0 +1,204 @@
+<%- include('partials/header', { user, title: assignment.title }) %>
+
+<p>
+  <a href="/faculty/dashboard">&larr; Back to dashboard</a>
+</p>
+
+<div class="card">
+
+  <div class="flex-between">
+
+    <h2 class="mt-0">
+      <%= assignment.title %>
+    </h2>
+
+    <form
+      method="POST"
+      action="/faculty/assignments/<%= assignment.id %>/close"
+    >
+      <input
+        type="hidden"
+        name="_csrf"
+        value="<%= csrfToken %>"
+      >
+
+      <button type="submit" class="btn btn-secondary btn-sm">
+        <%= assignment.status === 'open' ? 'Close assignment' : 'Reopen assignment' %>
+      </button>
+    </form>
+
+  </div>
+
+  <p class="muted">
+    <%= assignment.course_name %>
+  </p>
+
+  <p>
+    <%= assignment.description %>
+  </p>
+
+  <p>
+    <strong>Deadline:</strong>
+    <%= new Date(assignment.deadline).toLocaleString() %>
+    &nbsp;
+
+    <% if (assignment.status === 'open') { %>
+      <span class="badge badge-open">
+        Open
+      </span>
+    <% } else { %>
+      <span class="badge badge-closed">
+        Closed
+      </span>
+    <% } %>
+  </p>
+
+  <p class="muted">
+    <%= submittedCount %> of <%= totalCount %> students submitted
+  </p>
+
+</div>
+
+
+<div class="card">
+
+  <div class="filters">
+
+    <a
+      class="btn btn-secondary btn-sm"
+      href="?filter=all&q=<%= search %>"
+    >
+      All (<%= totalCount %>)
+    </a>
+
+    <a
+      class="btn btn-secondary btn-sm"
+      href="?filter=submitted&q=<%= search %>"
+    >
+      Submitted (<%= submittedCount %>)
+    </a>
+
+    <a
+      class="btn btn-secondary btn-sm"
+      href="?filter=not_submitted&q=<%= search %>"
+    >
+      Not submitted (<%= totalCount - submittedCount %>)
+    </a>
+
+  </div>
+
+
+  <form
+    method="GET"
+    style="margin-bottom:14px; max-width:320px"
+  >
+
+    <input
+      type="hidden"
+      name="filter"
+      value="<%= filter %>"
+    >
+
+    <input
+      type="text"
+      name="q"
+      placeholder="Search by name, ID, or email"
+      value="<%= search %>"
+    >
+
+  </form>
+
+
+  <% if (students.length === 0) { %>
+
+    <div class="empty-state">
+      No students match this view.
+    </div>
+
+  <% } else { %>
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>Student</th>
+            <th>Student ID</th>
+            <th>Submission time</th>
+            <th>File</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <% students.forEach(s => { %>
+
+            <tr>
+
+              <td>
+                <%= s.name %>
+                <br>
+                <span class="muted" style="font-size:0.8rem">
+                  <%= s.email %>
+                </span>
+              </td>
+
+              <td>
+                <%= s.student_id || '—' %>
+              </td>
+
+              <td>
+                <%= s.submission_id ? new Date(s.submitted_at).toLocaleString() : '—' %>
+              </td>
+
+              <td>
+
+                <% if (s.submission_id) { %>
+
+                  <a href="/faculty/submissions/<%= s.submission_id %>/download">
+                    Download
+                  </a>
+
+                <% } else { %>
+
+                  —
+
+                <% } %>
+
+              </td>
+
+              <td>
+
+                <% if (s.submission_id) { %>
+
+                  <span class="badge badge-submitted">
+                    Submitted
+                  </span>
+
+                <% } else { %>
+
+                  <span class="badge badge-pending">
+                    Not submitted
+                  </span>
+
+                <% } %>
+
+              </td>
+
+            </tr>
+
+          <% }) %>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  <% } %>
+
+</div>
+
+<%- include('partials/footer') %>

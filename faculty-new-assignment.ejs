@@ -1,0 +1,142 @@
+<%- include('partials/header', { user, title: 'New Assignment' }) %>
+
+<p>
+  <a href="/faculty/dashboard">
+    &larr; Back to dashboard
+  </a>
+</p>
+
+
+<div class="card" style="max-width:600px">
+
+  <h2 class="mt-0">
+    Create assignment
+  </h2>
+
+  <% if (error) { %>
+
+    <div class="alert alert-error">
+      <%= error %>
+    </div>
+
+  <% } %>
+
+
+  <form method="POST" action="/faculty/assignments">
+
+    <input
+      type="hidden"
+      name="_csrf"
+      value="<%= csrfToken %>"
+    >
+
+
+    <div class="form-group">
+
+      <label for="title">
+        Title
+      </label>
+
+      <input
+        type="text"
+        id="title"
+        name="title"
+        value="<%= values.title || '' %>"
+        required
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="course_name">
+        Course
+      </label>
+
+      <input
+        type="text"
+        id="course_name"
+        name="course_name"
+        value="<%= values.course_name || '' %>"
+        placeholder="e.g. CSE101"
+        required
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="description">
+        Description / instructions
+      </label>
+
+      <textarea
+        id="description"
+        name="description"
+      ><%= values.description || '' %></textarea>
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="deadline">
+        Deadline
+      </label>
+
+      <input
+        type="datetime-local"
+        id="deadline"
+        name="deadline"
+        value="<%= values.deadline || '' %>"
+        required
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="allowed_file_types">
+        Allowed file types (comma-separated)
+      </label>
+
+      <input
+        type="text"
+        id="allowed_file_types"
+        name="allowed_file_types"
+        value="<%= values.allowed_file_types || 'pdf,doc,docx' %>"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="max_file_size_mb">
+        Maximum file size (MB)
+      </label>
+
+      <input
+        type="number"
+        id="max_file_size_mb"
+        name="max_file_size_mb"
+        min="1"
+        value="<%= values.max_file_size_mb || 10 %>"
+      >
+
+    </div>
+
+
+    <button type="submit" class="btn">
+      Create assignment
+    </button>
+
+  </form>
+
+</div>
+
+
+<%- include('partials/footer') %>

@@ -1,0 +1,148 @@
+<%- include('partials/header', { user, title: 'Student Dashboard' }) %>
+
+<h2 class="mt-0">
+  Welcome, <%= user.name %>
+</h2>
+
+<p class="muted">
+  Student ID: <%= user.student_id || '—' %>
+</p>
+
+
+<div class="stats-grid">
+
+  <div class="stat-card">
+
+    <div class="value">
+      <%= stats.total %>
+    </div>
+
+    <div class="label">
+      Total assignments
+    </div>
+
+  </div>
+
+
+  <div class="stat-card">
+
+    <div class="value">
+      <%= stats.submitted %>
+    </div>
+
+    <div class="label">
+      Submitted
+    </div>
+
+  </div>
+
+
+  <div class="stat-card">
+
+    <div class="value">
+      <%= stats.pending %>
+    </div>
+
+    <div class="label">
+      Pending
+    </div>
+
+  </div>
+
+</div>
+
+
+<div class="card">
+
+  <h3 class="mt-0">
+    Your assignments
+  </h3>
+
+
+  <% if (assignments.length === 0) { %>
+
+    <div class="empty-state">
+      No assignments yet. Check back later.
+    </div>
+
+  <% } else { %>
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>Assignment</th>
+            <th>Course</th>
+            <th>Deadline</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+
+        <tbody>
+
+          <% assignments.forEach(a => { %>
+
+            <tr>
+
+              <td>
+                <%= a.title %>
+              </td>
+
+              <td>
+                <%= a.course_name %>
+              </td>
+
+              <td>
+                <%= new Date(a.deadline).toLocaleString() %>
+              </td>
+
+              <td>
+
+                <% if (a.submission_id) { %>
+
+                  <span class="badge badge-submitted">
+                    Submitted
+                  </span>
+
+                <% } else if (a.status === 'closed') { %>
+
+                  <span class="badge badge-closed">
+                    Closed
+                  </span>
+
+                <% } else { %>
+
+                  <span class="badge badge-pending">
+                    Pending
+                  </span>
+
+                <% } %>
+
+              </td>
+
+              <td>
+                <a href="/student/assignments/<%= a.id %>">
+                  View
+                </a>
+              </td>
+
+            </tr>
+
+          <% }) %>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  <% } %>
+
+</div>
+
+
+<%- include('partials/footer') %>

@@ -1,0 +1,141 @@
+<%- include('partials/header', { user, title: 'Faculty Dashboard' }) %>
+
+<div class="flex-between">
+
+  <h2 class="mt-0">
+    Welcome, <%= user.name %>
+  </h2>
+
+  <a class="btn" href="/faculty/assignments/new">
+    + New assignment
+  </a>
+
+</div>
+
+
+<div class="stats-grid">
+
+  <div class="stat-card">
+    <div class="value">
+      <%= stats.totalAssignments %>
+    </div>
+
+    <div class="label">
+      Total assignments
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="value">
+      <%= stats.totalSubmissions %>
+    </div>
+
+    <div class="label">
+      Total submissions
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="value">
+      <%= stats.pendingSubmissions %>
+    </div>
+
+    <div class="label">
+      Pending submissions
+    </div>
+  </div>
+
+</div>
+
+
+<div class="card">
+
+  <h3 class="mt-0">
+    Your assignments
+  </h3>
+
+  <% if (assignments.length === 0) { %>
+
+    <div class="empty-state">
+      You haven't created any assignments yet.
+    </div>
+
+  <% } else { %>
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Course</th>
+            <th>Deadline</th>
+            <th>Status</th>
+            <th>Submissions</th>
+            <th></th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <% assignments.forEach(a => { %>
+
+            <tr>
+
+              <td>
+                <%= a.title %>
+              </td>
+
+              <td>
+                <%= a.course_name %>
+              </td>
+
+              <td>
+                <%= new Date(a.deadline).toLocaleString() %>
+              </td>
+
+              <td>
+
+                <% if (a.status === 'open') { %>
+
+                  <span class="badge badge-open">
+                    Open
+                  </span>
+
+                <% } else { %>
+
+                  <span class="badge badge-closed">
+                    Closed
+                  </span>
+
+                <% } %>
+
+              </td>
+
+              <td>
+                <%= a.submission_count %>
+              </td>
+
+              <td>
+                <a href="/faculty/assignments/<%= a.id %>">
+                  Manage
+                </a>
+              </td>
+
+            </tr>
+
+          <% }) %>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  <% } %>
+
+</div>
+
+
+<%- include('partials/footer') %>
